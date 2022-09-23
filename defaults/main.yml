@@ -1,0 +1,46 @@
+---
+# defaults file for volkula.zimbra_install
+zimbra_install_workdir: "/opt/zimbra-install"
+
+zimbra_workdir: "/opt/zimbra"
+
+zimbra_url_rhel7: "https://files.zimbra.com/downloads/8.8.15_GA/zcs-8.8.15_GA_3869.RHEL7_64.20190918004220.tgz"
+
+zimbra_url_debian: https://files.zimbra.com/downloads/8.8.15_GA/zcs-8.8.15_GA_4179.UBUNTU20_64.20211118033954.tgz
+
+zimbra_url_rhel8: https://files.zimbra.com/downloads/8.8.15_GA/zcs-8.8.15_GA_4362.RHEL8_64.20220721104405.tgz
+
+zimbra_install_packages: "zimbra-core zimbra-ldap zimbra-logger zimbra-mta zimbra-snmp zimbra-store zimbra-apache zimbra-spell zimbra-memcached zimbra-proxy "
+
+# config vars
+mail_domanin: mail.example.com
+hostname: mail
+
+# install_params
+install_certbot: true
+
+remove_snap: false
+# defaults file for certbot-zimbra
+
+certbot_zimbra_version: "0.7.12"
+# https://github.com/YetOpen/certbot-zimbra
+
+zimbra_fqdn: mail.example.com
+zimbra_timezone: Europe/Moscow
+zimbra_admin_password: zimbra4ever
+
+license: "y"
+zimbra_package_repository: "y"
+zimbra_ldap: "y"
+zimbra_logger: "y"
+zimbra_mta: "y"
+zimbra_dnscache: "n"
+zimbra_snmp: "y"
+zimbra_store: "y"
+zimbra_apache: "y"
+zimbra_spell: "n"
+zimbra_memcached: "y"
+zimbra_proxy: "y"
+zimbra_drive: "y"
+zimbra_imapd: "n"
+zimbra_chat: "n"

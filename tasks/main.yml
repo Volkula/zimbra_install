@@ -1,0 +1,14 @@
+---
+#####################################################
+
+- name: Install Dependencies
+  include_tasks: _dependencies.yml
+- name: Download and unpack
+  include_tasks: _download.yml
+- name: Generate configs
+  include_tasks: _build_config.yml
+- name: Install Zimbra
+  include_tasks: _install.yml
+- name: Install CertBot
+  include_tasks: _install_certbot.yml
+####################################################

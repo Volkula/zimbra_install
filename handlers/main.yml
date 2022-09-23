@@ -1,0 +1,6 @@
+---
+# handlers file for volkula.zimbra_install
+- name: restart dnsmasq
+  service:
+    name: dnsmasq
+    state: restarted

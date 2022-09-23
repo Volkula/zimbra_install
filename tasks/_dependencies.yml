@@ -1,0 +1,123 @@
+---
+- name: Install utilities and dependencies
+  apt:
+    name:
+      - wget
+      - lsof
+      - libpcre2-8-0
+    state: present
+    update_cache: yes
+  when:
+    - ansible_os_family == "Debian"
+
+- name: Install utilities and dependencies
+  yum:
+    name:
+      - wget
+      - lsof
+      - perl
+      - pcre2
+    state: present
+  when:
+    - ansible_os_family == "RedHat"
+
+- name: Configure time zone
+  community.general.timezone:
+    name: "{{ zimbra_timezone }}"
+
+- name: Configure hostname
+  hostname:
+    name: "{{ zimbra_fqdn }}"
+
+- name: Configure hosts file
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+
+- name: Gather facts
+  setup:
+
+- name: Fix hosts file
+  block:
+    - file:
+        path: /etc/hosts
+        state: absent
+    - blockinfile:
+        path: /etc/hosts
+        create: yes
+        block: |
+          127.0.0.1 localhost.localdomain localhost
+          {{ ansible_default_ipv4.address }} {{ ansible_fqdn }} {{ ansible_hostname }}
+
+- name: Disable postfix
+  service:
+    name: postfix
+    state: stopped
+    enabled: no
+  ignore_errors: true
+
+# - name: Remove snap
+#   apt:
+#     name:
+#       - snapd
+#     update_cache: yes
+#     state: absent
+#   when:
+#     - ansible_os_family == "Debian"
+#     - ansible_distribution == "Ubuntu"
+#     - remove_snap == "true"
+
+- name: Disable systemd-resolved
+  block:
+    - service:
+        name: systemd-resolved
+        state: stopped
+        enabled: no
+      when:
+        - ansible_os_family == "Debian"
+    - command: systemctl mask systemd-resolved
+      when:
+        - ansible_os_family == "Debian"
+    - file:
+        path: /etc/resolv.conf
+        state: absent
+    - blockinfile:
+        path: /etc/resolv.conf
+        create: yes
+        block: |
+          search {{ ansible_domain }}
+          nameserver 8.8.8.8
+          nameserver 8.8.4.4
+
+- name: Install dnsmasq (deb)
+  apt:
+    name: dnsmasq
+    state: present
+    update_cache: yes
+  when:
+    - ansible_os_family == "Debian"
+
+- name: Install dnsmasq (EL)
+  yum:
+    name: dnsmasq
+    state: present
+
+- name: Configure dnsmasq.conf
+  template:
+    src: dnsmasq.conf.j2
+    dest: /etc/dnsmasq.conf
+  notify: restart dnsmasq
+
+- meta: flush_handlers
+
+- name: Configure local dns
+  block:
+    - file:
+        path: /etc/resolv.conf
+        state: absent
+    - blockinfile:
+        path: /etc/resolv.conf
+        create: yes
+        block: |
+          search {{ ansible_domain }}
+          nameserver 127.0.0.1

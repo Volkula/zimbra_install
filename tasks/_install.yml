@@ -1,0 +1,29 @@
+---
+- name: Clean dpkg update_cache
+  apt:
+    update_cache: yes
+    autoremove: yes
+  when:
+    - ansible_os_family == "Debian"
+
+- name: run zimbra installer phase 1
+  shell: ./install.sh -s < {{ zimbra_install_workdir }}/zimbra_answers
+  args:
+    chdir: "{{ zimbra_install_workdir }}"
+
+- name: run zimbra installer phase 2
+  command: "{{zimbra_workdir}}/libexec/zmsetup.pl -c {{ zimbra_install_workdir }}/zimbra_config"
+
+- name: set trusted ip
+  shell: ./zmprov mcf +zimbraMailTrustedIP 127.0.0.1 +zimbraMailTrustedIP "{{ ansible_default_ipv4.address }}"
+  args:
+    chdir: "{{zimbra_workdir}}/bin"
+  become_user: zimbra
+  ignore_errors: true
+
+- name: restart zimbra services
+  shell: ./zmcontrol restart
+  args:
+    chdir: "{{zimbra_workdir}}/bin"
+  become_user: zimbra
+  ignore_errors: true

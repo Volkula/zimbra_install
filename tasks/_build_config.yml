@@ -1,0 +1,42 @@
+---
+- name: Make workdir
+  file:
+    path: "{{ zimbra_workdir }}"
+    state: directory
+
+- name: Configure answer file
+  template:
+    src: zimbra_answers.j2
+    dest: "{{ zimbra_install_workdir }}/zimbra_answers"
+
+- name: Capture random chars 1
+  shell: date | md5sum | cut -c 1-9
+  register: zimbra_random_chars_1
+
+- name: wait 3 seconds
+  pause:
+    seconds: 3
+
+- name: Capture random chars 2
+  shell: date | md5sum | cut -c 1-14
+  register: zimbra_random_chars_2
+
+- name: Capture mailboxd memory
+  shell: free -m | awk 'NR==2{printf "%.0f\n", $2*0.25 }'
+  register: zimbra_mailboxd_memory
+
+- name: Capture system memory
+  shell: free -h | awk 'NR==2{printf "%.0f\n", $2 }'
+  register: zimbra_system_memory
+
+- name: Configure config file
+  template:
+    src: zimbra_config.j2
+    dest: "{{ zimbra_install_workdir }}/zimbra_config"
+
+- name: Disable checks
+  lineinfile:
+    path: "{{ zimbra_install_workdir }}/install.sh"
+    regexp: "^checkRequired"
+    line: "#checkRequired"
+    backrefs: yes

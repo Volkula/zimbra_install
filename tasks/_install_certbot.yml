@@ -1,0 +1,39 @@
+---
+- name: Install certbot EL
+  yum:
+    name:
+      - epel-release
+      - certbot
+    state: present
+  when:
+    - ansible_os_family == "RedHat"
+    - install_certbot == "true"
+
+- name: Install certbot Ubuntu\debian
+  apt:
+    name:
+      - certbot
+    update_cache: yes
+    state: present
+  when:
+    - ansible_os_family == "Debian"
+    - install_certbot == "true"
+
+- name: Get version number of latest certbot-zimbra
+  shell:
+    cmd: curl --silent 'https://api.github.com/repos/YetOpen/certbot-zimbra/releases/latest' |  grep '"tag_name":' | cut -d'"' -f4
+  register: certbot_zimbra_latest
+  changed_when: false
+  args:
+    warn: no
+
+- set_fact:
+    certbot_zimbra_version: "{{ certbot_zimbra_latest.stdout }}"
+  when:
+    - certbot_zimbra_latest.stdout | length > 0
+
+- name: Install certbot-zimbra "{{ certbot_zimbra_version }}"
+  get_url:
+    url: "https://raw.githubusercontent.com/YetOpen/certbot-zimbra/{{ certbot_zimbra_version }}/certbot_zimbra.sh"
+    dest: "/usr/local/bin/certbot_zimbra.sh"
+    mode: 0744

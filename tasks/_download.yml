@@ -1,0 +1,36 @@
+---
+- name: Make zip workdir
+  file:
+    path: "{{ zimbra_install_workdir }}"
+    state: directory
+
+- name: Get Zimbra for RedHat7
+  unarchive:
+    src: "{{ zimbra_url_rhel7 }}"
+    dest: "{{ zimbra_install_workdir }}"
+    extra_opts: "--strip-components=1"
+    remote_src: yes
+  when:
+    - ansible_os_family == "RedHat"
+    - ansible_distribution == "CentOS"
+    - ansible_distribution_major_version == "7"
+
+- name: Get Zimbra for RedHat
+  unarchive:
+    src: "{{ zimbra_url_rhel8 }}"
+    dest: "{{ zimbra_install_workdir }}"
+    extra_opts: "--strip-components=1"
+    remote_src: yes
+  when:
+    - ansible_os_family == "RedHat"
+    - ansible_distribution == "CentOS"
+    - ansible_distribution_major_version == "8"
+
+- name: Get Zimbra for Ubuntu\Debian
+  unarchive:
+    src: "{{ zimbra_url_debian }}"
+    dest: "{{ zimbra_install_workdir }}"
+    extra_opts: "--strip-components=1"
+    remote_src: yes
+  when:
+    - ansible_os_family == "Debian"
