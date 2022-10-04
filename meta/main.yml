@@ -11,12 +11,19 @@ galaxy_info:
     versions:
     - focal
     - bionic
-  - name: RedHat
+  - name: EL
     versions:
-    - 7
-    - 8
+      - 7
+      - 8
+      - 9
 
   galaxy_tags:
-  - 
+    - mail
+    - system
+    - web
+    - ldap
+    - zimbra
+    - community
+    - dnsmasq
 
 dependencies: []
