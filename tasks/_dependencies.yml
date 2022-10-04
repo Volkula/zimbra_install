@@ -101,6 +101,8 @@
   yum:
     name: dnsmasq
     state: present
+  when:
+    - ansible_os_family == "RedHat"
 
 - name: Configure dnsmasq.conf
   template:

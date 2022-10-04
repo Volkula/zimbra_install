@@ -26,8 +26,12 @@
     mail_domanin: mail.example.com
     hostname: mail
     
-    # install_params
-    install_mode: manual
+    HTTPPROXY: false
+    HTTPSPROXYPORT: 443
+    HTTPSPORT: 8443
+    HTTPPROXYPORT: 80
+    HTTPPORT: 8080
+
     install_certbot: true
     
     remove_snap: false
