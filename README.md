@@ -2,7 +2,7 @@
 Based on https://github.com/jancubillan/ansible-zimbra-single
 ## Supported platforms:
 - CentOS 7
-- Любой RHEl-based 8
+- Any RHEl-based 8
 - Ubuntu < 20.04
 
 ## Playbook examle
