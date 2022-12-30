@@ -1,11 +1,11 @@
-# Ansible роль для установки Zimbra OSE 8.8.15
-Основано на https://github.com/jancubillan/ansible-zimbra-single
-## Поддерживаемые плаформы:
+# Ansible role: Install Zimbra OSE 8.8.15
+Based on https://github.com/jancubillan/ansible-zimbra-single
+## Supported platforms:
 - CentOS 7
 - Любой RHEl-based 8
-- Ubuntu до 20й версии
+- Ubuntu < 20.04
 
-## Пример плейбука
+## Playbook examle
 
 ```yml
 - name: Config host and install Zimbra
@@ -20,7 +20,7 @@
     - role: volkula.zimbra_install
 ```
 
-## Дополнительные переменные
+## Additional vars
 ```yml
   vars:
     mail_domanin: mail.example.com
